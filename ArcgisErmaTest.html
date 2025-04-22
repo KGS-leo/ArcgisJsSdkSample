@@ -99,16 +99,15 @@
   </div>
 
   <script>
-    // Map initialization (optional, if you need a map)
     require([
       "esri/config",
       "esri/WebMap",
       "esri/views/MapView"
     ], function(esriConfig, WebMap, MapView) {
-      esriConfig.portalUrl = "https://gisportal.kgsgroup.com/arcgis/"; // 🌐 Use your ArcGIS Enterprise or Online portal
+      esriConfig.portalUrl = "https://gisportal.kgsgroup.com/arcgis/"; //portal url and sign in
       const webmap = new WebMap({
         portalItem: {
-          id: "879baf279c9d4f5aac917192be8d2672" // 🧭 Replace with your actual web map ID
+          id: "879baf279c9d4f5aac917192be8d2672" // item it
         }
       });
 
@@ -118,7 +117,6 @@
       });
     });
 
-    // Declare a variable to store data from API
     let jsonData = [];
 
     // Function to fetch data from API
