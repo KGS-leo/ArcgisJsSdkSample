@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebMap Information</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.29/"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    #map-view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+    }
+
+    #info-panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: white;
+      padding: 10px;
+      border: 1px solid #ccc;
+      z-index: 2;
+      max-width: 400px;
+      max-height: 400px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- Map fills background -->
+  <div id="map-view"></div>
+
+  <!-- Panel to display WebMap information -->
+  <div id="info-panel">
+    <h3>WebMap Information</h3>
+    <div id="webmap-info">Loading WebMap information...</div>
+  </div>
+
+  <script>
+    require([
+      "esri/config",
+      "esri/WebMap",
+      "esri/views/MapView",
+      "esri/portal/Portal"
+    ], function(esriConfig, WebMap, MapView) {
+      esriConfig.portalUrl = "https://gisportal.kgsgroup.com/arcgis/";
+
+      // Load the WebMap
+      const webmap = new WebMap({
+        portalItem: {
+          id: "879baf279c9d4f5aac917192be8d2672"
+        }
+      });
+
+      const view = new MapView({
+        container: "map-view",
+        map: webmap
+      });
+
+      // Once the WebMap is loaded, fetch its information
+      webmap.when(function() {
+        console.log("WebMap successfully loaded!");
+
+        // Extract WebMap information
+        const title = webmap.portalItem.title;
+        const description = webmap.portalItem.description;
+        const tags = webmap.portalItem.tags;
+        const layers = webmap.map.layers.items;
+        const basemap = webmap.map.basemap;
+
+        // Build HTML content to display WebMap details
+        let infoHtml = `<p><strong>Title:</strong> ${title}</p>`;
+        infoHtml += `<p><strong>Description:</strong> ${description}</p>`;
+        infoHtml += `<p><strong>Tags:</strong> ${tags.join(', ')}</p>`;
+        infoHtml += `<p><strong>Basemap:</strong> ${basemap.id}</p>`;
+        infoHtml += `<p><strong>Layers:</strong></p><ul>`;
+
+        layers.forEach(layer => {
+          infoHtml += `<li><strong>Layer Title:</strong> ${layer.title}, <strong>Type:</strong> ${layer.type}</li>`;
+        });
+
+        infoHtml += `</ul>`;
+
+        // Display the WebMap information in the info panel
+        document.getElementById("webmap-info").innerHTML = infoHtml;
+
+      }).catch(function(error) {
+        console.error("Error loading WebMap:", error);
+        document.getElementById("webmap-info").innerHTML = "Failed to load WebMap information.";
+      });
+    });
+  </script>
+</body>
+</html>
